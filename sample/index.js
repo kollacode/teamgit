@@ -1,5 +1,7 @@
 const trace = (x, msg = "") => (console.log(msg, x), x)
 
+const id = (x) => x
+
 const asConst = (a) => (b) => a
 
 const compose_ = (g, f) => (...x) => g(f(...x))
@@ -8,13 +10,13 @@ const compose = (...fs) => fs.reduce(compose_)
 
 const flip = (f) => (b) => (a) => f(a)(b)
 
-const dearg = (...xs) => xs
+const argsAslList = (...xs) => xs
 
 const onSnd = (f) => (_, x) => f(x)
 
 const fold = (f) => (y) => (xs) => xs.reduce (f, y)
 
-const fold_ = (f) => fold (onSnd (f)) ()
+const fold_ = (f) => (xs) => xs.forEach(f)
 
 const newTag = (tagName) => document.createElement (tagName)
 
@@ -36,7 +38,7 @@ const addChildTo = flip (appendElem)
 const addChildrenTo = (p) => 
   compose 
     ( fold_ (addChildTo (p))
-    , dearg
+    , argsAslList
     )
 
 const findElemById = (id) => document.querySelector(`#${id}`)
@@ -49,8 +51,25 @@ const renderTodoItem = compose_(tag ('div'), itemText)
 
 const mainElem = () => findElemById ('main') 
 
-addChildrenTo
-  (mainElem())
-  ( renderTodoItem (newItem ('bob'))
-  , renderTodoItem (newItem ('joe'))
-  )
+const map = (f) => (xs) => xs.map(f)
+
+const range = (min) => (max) => map (onSnd(id)) (new Array(max - min).fill())
+
+const prependText = (prefix) => (t) => `${prefix}${t}`
+
+const renderTodoItems = (todoItems) =>
+  addChildrenTo
+    (mainElem())
+    ( ...map (renderTodoItem) (todoItems)
+    )
+
+const todoItems = 
+  map 
+    ( compose 
+        ( newItem
+        , prependText ("Item - ")
+        ) 
+    )
+    (range (0) (4))
+
+renderTodoItems (todoItems)
