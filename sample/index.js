@@ -1,5 +1,7 @@
 const trace = (x, msg = "") => (console.log(msg, x), x)
 
+const applyTo = (...x) => (f) => f(...x)
+
 const id = (x) => x
 
 const asConst = (a) => (b) => a
@@ -8,7 +10,7 @@ const compose_ = (g, f) => (...x) => g(f(...x))
 
 const compose = (...fs) => fs.reduce(compose_)
 
-const flip = (f) => (b) => (a) => f(a)(b)
+const flip = (f) => (...b) => (...a) => f(...a)(...b)
 
 const argsAslList = (...xs) => xs
 
@@ -24,15 +26,14 @@ const range = (min) => (max) => map (onSnd(id)) (new Array(max - min).fill())
 
 const prependText = (prefix) => (t) => `${prefix}${t}`
 
+const appendText = flip(prependText)
+
 const newTag = (tagName) => document.createElement (tagName)
 
-const setContent = (content) => (elem) =>
+const innerText = (content) => (elem) =>
   ( elem.innerText = content
   , elem
   )
-
-const tag = (tagName) => (content) =>
-  compose_(setContent (content), newTag) (tagName)
 
 const appendElem = (elem) => (paren) => 
   ( paren.appendChild (elem)
@@ -49,19 +50,28 @@ const addChildrenTo = (p) =>
 
 const findElemById = (id) => document.querySelector(`#${id}`)
 
-const newItem = (text) => ({ text })
+const newItem = (text = "TODO", isDone = false) => ({ text, isDone })
 
 const itemText = ({ text = "" }) => text
 
-const renderTodoItem = compose_(tag ('div'), itemText)
+const isDone = ({ isDone = true }) => isDone
+
+const liftReader = (f) => (g) => (h) => (r) => f (g(r)) (h(r))
+
+const inBetween = (s) => compose (prependText, appendText (s))
+
+const newTagWith = (tagName) => (f) => f (newTag (tagName))
+
+const renderTodoItem = 
+  compose
+    ( newTagWith ('div')
+    , innerText
+    , liftReader (inBetween (" - ")) (itemText) (isDone)
+    )
 
 const mainElem = () => findElemById ('main') 
 
-const renderTodoItems = (todoItems) =>
-  addChildrenTo
-    (mainElem())
-    ( ...map (renderTodoItem) (todoItems)
-    )
+const renderTodoItems = map (renderTodoItem)
 
 const todoItems = 
   map 
@@ -72,4 +82,6 @@ const todoItems =
     )
     (range (0) (4))
 
-renderTodoItems (todoItems)
+addChildrenTo
+  (mainElem())
+  (... renderTodoItems (todoItems))
