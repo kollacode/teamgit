@@ -1,6 +1,25 @@
 Team Git
 ========
 
+Work Flow
+---------
+
+1. Pull from origin/master
+1. Create a new branch
+1. Make your changes (backing up your changes on the remote)
+1. Periodically rebase onto master to make sure that your changes are not
+   affected by things going on in master. This fixes merge conflicts early as
+   well as makes sure your changes are logically consistent when it's time for
+   you to merge.
+1. Open a PR EARLY! This helps others have a say in the code you're writing and
+   provides a place for discussion.
+1. Once you're done do a final pull from origin/master and squash and rebase.
+   Make the final commit message something like: `Fixes #2 - adds a new cool
+   feature!`. This will auto-close the github issue and move the necessary 
+   cards around in the kanban project (once the PR is merged)
+1. The reviewer should be the one to merge the changes in on github. This puts
+   their skin in the game so ultimately they are responsible for changes.
+
 Git Basics
 ----------
 
@@ -75,25 +94,6 @@ Rebasing
 --------
 
 Simply re-apply the changes introduced in your branch to another commit.
-
-Work Flow
----------
-
-1. Pull from origin/master
-1. Create a new branch
-1. Make your changes (backing up your changes on the remote)
-1. Periodically rebase onto master to make sure that your changes are not
-   affected by things going on in master. This fixes merge conflicts early as
-   well as makes sure your changes are logically consistent when it's time for
-   you to merge.
-1. Open a PR EARLY! This helps others have a say in the code you're writing and
-   provides a place for discussion.
-1. Once you're done do a final pull from origin/master and squash and rebase.
-   Make the final commit message something like: `Fixes #2 - adds a new cool
-   feature!`. This will auto-close the github issue and move the necessary 
-   cards around in the kanban project (once the PR is merged)
-1. The reviewer should be the one to merge the changes in on github. This puts
-   their skin in the game so ultimately they are responsible for changes.
 
 Resources
 ---------
