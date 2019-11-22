@@ -4,6 +4,8 @@ const curry = (f) => (...a) => (...b) => f(...a, ...b)
 
 const applyTo = (...x) => (f) => f(...x)
 
+const lazyApplyTo = (f) => (x) => () => f(x())
+
 const id = (x) => x
 
 const asConst = (a) => (b) => a
@@ -30,21 +32,30 @@ const prependText = (prefix) => (t) => `${prefix}${t}`
 
 const appendText = flip(prependText)
 
-const newTag = (tagName) => document.createElement (tagName)
+const findElemById = (id) => document.querySelector(`#${id}`)
 
-const newTagWith = (tagName) => (f) => f (newTag (tagName))
+const newTag = (tagName) => () => document.createElement (tagName)
 
-const innerText = (content) => (elem) =>
+//TODO: fix this to support the laziness of newTag
+const tag = (tagName) => (...fs) => compose(...fs, newTag (tagName))
+
+const innerText = (content) => lazyApplyTo (elem =>
   ( elem.innerText = content
   , elem
   )
+)
 
-const tag = (tagName) => (...fs) => compose(...fs, newTag) (tagName)
+const addAttribute = (name) => (value) => lazyApplyTo (elem =>
+  ( elem.setAttribute (name, value)
+  , elem
+  )
+)
 
-const appendElem = (elem) => (paren) => 
+const appendElem = (elem) => lazyApplyTo (paren => 
   ( paren.appendChild (elem)
   , paren
   )
+)
 
 const addChildTo = flip (appendElem)
 
@@ -54,32 +65,24 @@ const addChildrenTo = (p) =>
     , argsAslList
     )
 
-const addAttribute = (name) => (value) => (elem) =>
-  ( elem.setAttribute (name, value)
-  , elem
-  )
-
-const extendAttrs = curry
-
 const input = (type) => (name) => (value) =>
-  extendAttrs (tag ('input'))
+  tag ('input')
     ( addAttribute ('type') (type)
     , addAttribute ('name') (name)
     , addAttribute ('value') (value)
     )
 
 const label = (value) =>
-  extendAttrs (tag ('label'))
-    ( innerText (value)
-    )
+  tag ('label') (innerText (value))
 
 const labelFor = (name) => (value) => 
-  extendAttrs (label(value)) (addAttribute ('for') (name))
+  compose(addAttribute ('for') (name), label(value))
 
-const checkBox = (x) => 
-  input ('checkbox') (x ? addAttribute ('checked') () : id) (x)
-
-const findElemById = (id) => document.querySelector(`#${id}`)
+const checkBox = (name) => (isChecked) => 
+  compose
+    ( isChecked ? addAttribute ('checked') (true) : id
+    , input ('checkbox') (name) ("")
+    )
 
 const newItem = (text = "TODO", isDone = false) => ({ text, isDone })
 
@@ -91,15 +94,14 @@ const liftReader = (f) => (g) => (h) => (r) => f (g(r)) (h(r))
 
 const inBetween = (s) => compose_ (prependText, appendText (s))
 
-const renderTodoItemText = compose_ (innerText, itemText)
+const renderTodoItemText = compose_ (tag ('div'), innerText, itemText)
 
-const renderTodoItemIsDone = compose (appendElem, checkBox, isDone)
+const renderTodoItemIsDone = compose_ (checkBox ("isDone"), isDone)
 
 const renderTodoItem = (item) =>
-  tag ('div')
-    ( renderTodoItemIsDone (item)
-    , renderTodoItemText (item) 
-    )
+  appendElem 
+    (renderTodoItemIsDone (item))
+    (renderTodoItemText (item))
 
 const mainElem = () => findElemById ('main') 
 
