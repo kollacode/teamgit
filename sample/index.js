@@ -1,10 +1,20 @@
-const trace = (x) => (console.log(x), x)
+const trace = (x, msg = "") => (console.log(msg, x), x)
+
+const asConst = (a) => (b) => a
 
 const compose_ = (g, f) => (...x) => g(f(...x))
 
 const compose = (...fs) => fs.reduce(compose_)
 
 const flip = (f) => (b) => (a) => f(a)(b)
+
+const dearg = (...xs) => xs
+
+const onSnd = (f) => (_, x) => f(x)
+
+const fold = (f) => (xs) => xs.reduce(f)
+
+const fold_ = (f) => fold (onSnd (f))
 
 const newTag = (tagName) => document.createElement (tagName)
 
@@ -21,9 +31,18 @@ const appendElem = (elem) => (paren) =>
   , paren
   )
 
-const addChild = flip (appendElem)
+const addChildTo = flip (appendElem)
+
+const addChildrenTo = (p) => 
+  compose 
+    ( asConst (p)
+    , fold_ (addChildTo(p))
+    , dearg
+    )
 
 const findElemById = (id) => document.querySelector(`#${id}`)
+
+const newItem = (text) => ({ text })
 
 const itemText = ({ text = "" }) => text
 
@@ -31,6 +50,8 @@ const renderTodoItem = compose_(tag ('div'), itemText)
 
 const mainElem = () => findElemById ('main') 
 
-addChild 
+addChildrenTo
   (mainElem())
-  (renderTodoItem({ text: "bob" }))
+  ( trace (renderTodoItem (newItem ('bob')), "BOB: ")
+  , trace (renderTodoItem (newItem ('joe')), "JOE: ")
+  )
