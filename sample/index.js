@@ -16,7 +16,13 @@ const onSnd = (f) => (_, x) => f(x)
 
 const fold = (f) => (y) => (xs) => xs.reduce (f, y)
 
-const fold_ = (f) => (xs) => xs.forEach(f)
+const map_ = (f) => (xs) => xs.forEach(f)
+
+const map = (f) => (xs) => xs.map(f)
+
+const range = (min) => (max) => map (onSnd(id)) (new Array(max - min).fill())
+
+const prependText = (prefix) => (t) => `${prefix}${t}`
 
 const newTag = (tagName) => document.createElement (tagName)
 
@@ -37,7 +43,7 @@ const addChildTo = flip (appendElem)
 
 const addChildrenTo = (p) => 
   compose 
-    ( fold_ (addChildTo (p))
+    ( map_ (addChildTo (p))
     , argsAslList
     )
 
@@ -50,12 +56,6 @@ const itemText = ({ text = "" }) => text
 const renderTodoItem = compose_(tag ('div'), itemText)
 
 const mainElem = () => findElemById ('main') 
-
-const map = (f) => (xs) => xs.map(f)
-
-const range = (min) => (max) => map (onSnd(id)) (new Array(max - min).fill())
-
-const prependText = (prefix) => (t) => `${prefix}${t}`
 
 const renderTodoItems = (todoItems) =>
   addChildrenTo
