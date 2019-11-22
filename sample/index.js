@@ -12,9 +12,9 @@ const dearg = (...xs) => xs
 
 const onSnd = (f) => (_, x) => f(x)
 
-const fold = (f) => (xs) => xs.reduce(f)
+const fold = (f) => (y) => (xs) => xs.reduce (f, y)
 
-const fold_ = (f) => fold (onSnd (f))
+const fold_ = (f) => fold (onSnd (f)) ()
 
 const newTag = (tagName) => document.createElement (tagName)
 
@@ -35,8 +35,7 @@ const addChildTo = flip (appendElem)
 
 const addChildrenTo = (p) => 
   compose 
-    ( asConst (p)
-    , fold_ (addChildTo(p))
+    ( fold_ (addChildTo (p))
     , dearg
     )
 
@@ -52,6 +51,6 @@ const mainElem = () => findElemById ('main')
 
 addChildrenTo
   (mainElem())
-  ( trace (renderTodoItem (newItem ('bob')), "BOB: ")
-  , trace (renderTodoItem (newItem ('joe')), "JOE: ")
+  ( renderTodoItem (newItem ('bob'))
+  , renderTodoItem (newItem ('joe'))
   )
