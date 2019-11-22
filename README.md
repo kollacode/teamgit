@@ -30,27 +30,29 @@ Problems that Git solves:
    branch). If I'm working on a feature that's not fully fleshed out yet but need to deviate to
    write a small utility library then I'll branch from master.
 
-     A <- B <- C <----------- J 
-          \     \           /  \
-           \     \ <- F <- H (new-util-lib)
-            \                    \ 
-             \ <- D <- E <- I <--- K (new-feature)
-
+    ```
+       A <- B <- C <----------- J 
+            \     \           /  \
+             \     \ <- F <- H (new-util-lib)
+              \                    \ 
+               \ <- D <- E <- I <--- K (new-feature)
+    ```
     This keeps bugs from the new feature restricted to the new-feature branch
     and bugs from the new-util-lib branch restricted to that
            
   
 1. Pick a "safe" branch that acts as the single source of truth. Only working
     non-broken code is allowed here. (Note: bugs will creep in bug we can minimize this)
-
-* Think before you dive in:
+1. Think about...
   
-  * code for the commit. (avoid heterogenous commits)
-  * you can always squash
+    * Am I solving a bug?
+    * are there any other branches open that could be affected by this?
+1. avoid heterogenous commits
+1. commit small, commit often. (Setup your text editor/ IDE to make this fast
+   and easy)
 
 I have a bug, now what?
 -----------------------
-
 
 Resources
 ---------
