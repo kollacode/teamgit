@@ -2,6 +2,8 @@ const trace = (x, msg = "") => (console.log(msg, x), x)
 
 const curry = (f) => (...a) => (...b) => f(...a, ...b)
 
+const uncurry = (f) => (a, ...b) => f(a)(...b)
+
 const applyTo = (...x) => (f) => f(...x)
 
 const lazyApplyTo = (f) => (x) => () => f(x())
@@ -10,9 +12,9 @@ const id = (x) => x
 
 const asConst = (a) => (b) => a
 
-const compose_ = (g, f) => (...x) => g(f(...x))
+const compose_ = (g) => (f) => (...x) => g(f(...x))
 
-const compose = (...fs) => fs.reduce(compose_)
+const compose = (...fs) => (x) => fs.reduce((v, f) => f(v), x)
 
 const flip = (f) => (...b) => (...a) => f(...a)(...b)
 
@@ -32,17 +34,12 @@ const prependText = (prefix) => (t) => `${prefix}${t}`
 
 const appendText = flip(prependText)
 
-const findElemById = (id) => document.querySelector(`#${id}`)
-
 /* type Tag = () -> Html
  * 
  * newTag :: TagName -> Tag
  *
- * asTag :: Html -> Tag
- * asTag = const
- *
  * mapTag :: (Html -> Html) -> Tag -> Tag 
- * mapTag f = asTag . f . runTag
+ * mapTag f t _ = f . runTag $ t
  *
  * runTag :: Tag -> Html
  * runTag = ($ ())
@@ -52,20 +49,20 @@ const findElemById = (id) => document.querySelector(`#${id}`)
 //    newTag : TagName -> Tag
 const newTag = (tagName) => () => document.createElement (tagName)
 
+//    findElemById : ElemId -> Tag
+const findElemById = (id) => () => document.querySelector(`#${id}`)
+
 //    tag : TagName -> (...Tag -> Tag) -> Tag
 const tag = (tagname) => (...fs) =>
   compose (...fs) (newTag (tagname))
-
-//    asTag : Html -> Tag
-const asTag = asConst
 
 //    runTag : Tag -> Html
 const runTag = applyTo ()
 
 //    mapTag : (Html -> Html) -> Tag -> Tag
-const mapTag = (f) => compose (runTag, f, asTag)
+const mapTag = (f) => (t) => () => compose_ (f) (runTag) (t)
 
-//    innerText : Text -> Html -> Html
+//    innerText : Text -> Tag -> Tag
 const innerText = (content) => mapTag (elem =>
   ( elem.innerText = content
   , elem
@@ -95,21 +92,17 @@ const fored = addAttribute ('for')
 const checked = addAttribute ('checked') (true)
 
 //    appendTag : Tag -> Tag -> Tag
-const appendElem = (elem) => mapTag (paren => 
+const appendElem = elem => mapTag (paren =>
   ( paren.appendChild (runTag (elem))
   , paren
   )
 )
 
-//    addChildTo : Tag -> Tag -> Tag
-const addChildTo = flip (appendElem)
+//    appendChild : Tag -> Tag -> Tag
+const appendChild = flip (appendElem)
 
-//    addChildrenTo : Tag -> (...Tag) -> Tag
-const addChildrenTo = (p) => 
-  compose 
-    ( for_ (addChildTo (p))
-    , argsAsList
-    )
+//    addChildrenTo : Tag -> [Tag] -> Tag
+const addChildrenTo = fold (uncurry (appendChild))
 
 //    input : Type -> Name -> Value -> Tag
 const input = (type) => (name) => (value) =>
@@ -135,38 +128,44 @@ const checkBox = (name) => (isChecked) =>
     ( (input ('checkbox') (name) (true)))
     (isChecked ? checked : id) 
 
-const newItem = (text = "TODO", isDone = false) => ({ text, isDone })
+//    newItem : Text -> Bool -> Item
+const newItem = (text = "TODO") => (isDone = false) => ({ text, isDone })
 
+//    itemText : Item -> Text
 const itemText = ({ text = "" }) => text
 
-const isDone = ({ isDone = true }) => isDone
+//    itemIsDone : Item -> Bool
+const itemIsDone = ({ isDone = true }) => isDone
 
-const liftReader = (f) => (g) => (h) => (r) => f (g(r)) (h(r))
+//    renderTodoItemText : Text -> Tag
+const renderTodoItemText = 
+  compose 
+  ( innerText
+  , applyTo (newTag ('div'))
+  )
 
-const inBetween = (s) => compose_ (prependText, appendText (s))
+//    renderTodoItemIsDone : Bool -> Tag
+const renderTodoItemIsDone = checkBox ('itemIsDone')
 
-const renderTodoItemText = compose_ (tag ('div'), innerText, itemText)
-
-const renderTodoItemIsDone = compose_ (checkBox ("isDone"), isDone)
-
+//    renderTodoItem : Item -> Tag
 const renderTodoItem = (item) =>
-  appendElem 
-    (renderTodoItemIsDone (item))
+  appendChild 
     (renderTodoItemText (item))
+    (renderTodoItemIsDone (item))
 
-const mainElem = () => findElemById ('main') 
+//    mainElem : Tag
+const mainElem = findElemById ('main') 
 
+//    renderTodoItems : [Item] -> [Tag]
 const renderTodoItems = map (renderTodoItem)
 
+//    todoItems : [Item]
 const todoItems = 
   map 
-    ( compose 
-        ( newItem
-        , prependText ("Item - ")
-        ) 
+    ( compose_ 
+        (flip (newItem) (true))
+        (prependText ("Item - "))
     )
     (range (0) (4))
 
-addChildrenTo
-  (mainElem())
-  (... renderTodoItems (todoItems))
+addChildrenTo (mainElem) (renderTodoItems (todoItems))
