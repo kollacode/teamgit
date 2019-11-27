@@ -101,7 +101,7 @@ const appendElem = elem => mapTag (paren =>
 //    appendChild : Tag -> Tag -> Tag
 const appendChild = flip (appendElem)
 
-//    addChildrenTo : Tag -> [Tag] -> Tag
+//    addChildrenTo : Tag -> (...Tag) -> Tag
 const addChildrenTo = (p) => compose_ (fold (uncurry (appendChild)) (p)) (argsAsList)
 
 //    input : Type -> Name -> Value -> Tag
@@ -122,6 +122,9 @@ const labelFor = (name) => (value) =>
 //    label : Value -> Tag
 const label = labelFor ('')
 
+//    inputText : Name -> Value -> Tag
+const inputText = input ('text')
+
 //    checkBox : Name -> Bool -> Tag
 const checkBox = (name) => (isChecked) => 
   applyTo 
@@ -138,11 +141,11 @@ const itemText = ({ text = "" }) => text
 const itemIsDone = ({ isDone = true }) => isDone
 
 //    renderTodoItemText : Text -> Tag
-const renderTodoItemText = 
-  compose 
-  ( innerText
-  , applyTo (newTag ('div'))
-  )
+const renderTodoItemText = (text) =>
+  addChildrenTo (newTag ('span'))
+    ( labelFor ("itemText") ("Item: ")
+    , inputText ("itemText") (text)
+    )
 
 //    renderTodoItemIsDone : Bool -> Tag
 const renderTodoItemIsDone = (isdone) =>
@@ -153,15 +156,19 @@ const renderTodoItemIsDone = (isdone) =>
 
 //    renderTodoItem : Item -> Tag
 const renderTodoItem = (item) =>
-  appendChild 
-    (renderTodoItemText (itemText (item)))
-    (renderTodoItemIsDone (itemIsDone (item)))
+  addChildrenTo (newTag ('div')) 
+    ( renderTodoItemText (itemText (item))
+    , renderTodoItemIsDone (itemIsDone (item))
+    )
 
 //    mainElem : Tag
 const mainElem = findElemById ('main') 
 
 //    renderTodoItems : [Item] -> [Tag]
-const renderTodoItems = map (renderTodoItem)
+const renderTodoItems = (items) => 
+  addChildrenTo (newTag ('form'))
+    (...map (renderTodoItem) (items)
+    )
 
 const header = tag ('h1') (innerText ("TODO!"))
 
@@ -179,6 +186,6 @@ const todoItems =
 runTag (
   addChildrenTo (mainElem) 
     ( header
-    , ...renderTodoItems (todoItems)
+    , renderTodoItems (todoItems)
     )
 )
