@@ -115,7 +115,7 @@ const input = (type) => (name) => (value) =>
 //    labelFor : Name -> Value -> Tag
 const labelFor = (name) => (value) => 
   tag ('label')
-    ( valued (value)
+    ( innerText (value)
     , fored (name)
     )
 
@@ -145,7 +145,11 @@ const renderTodoItemText =
   )
 
 //    renderTodoItemIsDone : Bool -> Tag
-const renderTodoItemIsDone = checkBox ('itemIsDone')
+const renderTodoItemIsDone = (isdone) =>
+  addChildrenTo (newTag ('span'))
+    ( labelFor ('itemIsDone') ("Is Done")
+    , checkBox ('itemIsDone') (isdone)
+    )
 
 //    renderTodoItem : Item -> Tag
 const renderTodoItem = (item) =>
@@ -164,14 +168,14 @@ const header = tag ('h1') (innerText ("TODO!"))
 //    todoItems : [Item]
 const todoItems = 
   map 
-    (compose_ 
-      (flip (newItem) (true)) 
-      (prependText ("Item - 1")) 
+    (compose 
+      ( (x) => x+1
+      , prependText ("Item - ")
+      , flip (newItem) (true)
+      ) 
     )
     (range (0) (4))
 
-console.log(todoItems)
- 
 runTag (
   addChildrenTo (mainElem) 
     ( header
