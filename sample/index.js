@@ -34,6 +34,20 @@ const appendText = flip(prependText)
 
 const findElemById = (id) => document.querySelector(`#${id}`)
 
+/* type Tag = () -> Html
+ * 
+ * newTag :: TagName -> Tag
+ *
+ * asTag :: Html -> Tag
+ * asTag = const
+ *
+ * mapTag :: (Html -> Html) -> Tag -> Tag 
+ * mapTag f = asTag . f . runTag
+ *
+ * runTag :: Tag -> Html
+ * runTag = ($ ())
+ *
+ */
 const newTag = (tagName) => () => document.createElement (tagName)
 
 //TODO: fix this to support the laziness of newTag
