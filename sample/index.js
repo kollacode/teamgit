@@ -48,29 +48,41 @@ const findElemById = (id) => document.querySelector(`#${id}`)
  * runTag = ($ ())
  *
  */
+
+//    newTag : TagName -> Tag
 const newTag = (tagName) => () => document.createElement (tagName)
 
-//TODO: fix this to support the laziness of newTag
-const tag = (tagName) => (...fs) => compose(...fs, newTag (tagName))
+//    asTag : Html -> Tag
+const asTag = asConst
 
-const innerText = (content) => lazyApplyTo (elem =>
+//    runTag : Tag -> Html
+const runTag = applyTo ()
+
+//    mapTag : (Html -> Html) -> Tag -> Tag
+const mapTag = (f) => compose (runTag, f, asTag)
+
+//    innerText : Text -> Html -> Html
+const innerText = (content) => mapTag (elem =>
   ( elem.innerText = content
   , elem
   )
 )
 
-const addAttribute = (name) => (value) => lazyApplyTo (elem =>
+//    addAttribute : Name -> Value -> Tag -> Tag
+const addAttribute = (name) => (value) => mapTag (elem =>
   ( elem.setAttribute (name, value)
   , elem
   )
 )
 
-const appendElem = (elem) => lazyApplyTo (paren => 
-  ( paren.appendChild (elem)
+//    appendTag : Tag -> Tag -> Tag
+const appendElem = (elem) => mapTag (paren => 
+  ( paren.appendChild (runTag (elem))
   , paren
   )
 )
 
+//    addChildTo : Tag -> Tag -> Tag
 const addChildTo = flip (appendElem)
 
 const addChildrenTo = (p) => 
