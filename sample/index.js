@@ -16,13 +16,13 @@ const compose = (...fs) => fs.reduce(compose_)
 
 const flip = (f) => (...b) => (...a) => f(...a)(...b)
 
-const argsAslList = (...xs) => xs
+const argsAsList = (...xs) => xs
 
 const onSnd = (f) => (_, x) => f(x)
 
 const fold = (f) => (y) => (xs) => xs.reduce (f, y)
 
-const map_ = (f) => (xs) => xs.forEach(f)
+const for_ = (f) => (xs) => xs.forEach(f)
 
 const map = (f) => (xs) => xs.map(f)
 
@@ -52,6 +52,10 @@ const findElemById = (id) => document.querySelector(`#${id}`)
 //    newTag : TagName -> Tag
 const newTag = (tagName) => () => document.createElement (tagName)
 
+//    tag : TagName -> (...Tag -> Tag) -> Tag
+const tag = (tagname) => (...fs) =>
+  compose (...fs) (newTag (tagname))
+
 //    asTag : Html -> Tag
 const asTag = asConst
 
@@ -75,6 +79,21 @@ const addAttribute = (name) => (value) => mapTag (elem =>
   )
 )
 
+//    named : Name -> Tag -> Tag
+const named = addAttribute ('name') 
+
+//    valued : Value -> Tag -> Tag
+const valued = addAttribute ('value')
+
+//    type : Type -> Tag -> Tag
+const typed = addAttribute ('type')
+
+//    fored : Name -> Tag -> Tag
+const fored = addAttribute ('for')
+
+//    checked : Tag -> Tag
+const checked = addAttribute ('checked') (true)
+
 //    appendTag : Tag -> Tag -> Tag
 const appendElem = (elem) => mapTag (paren => 
   ( paren.appendChild (runTag (elem))
@@ -85,30 +104,36 @@ const appendElem = (elem) => mapTag (paren =>
 //    addChildTo : Tag -> Tag -> Tag
 const addChildTo = flip (appendElem)
 
+//    addChildrenTo : Tag -> (...Tag) -> Tag
 const addChildrenTo = (p) => 
   compose 
-    ( map_ (addChildTo (p))
-    , argsAslList
+    ( for_ (addChildTo (p))
+    , argsAsList
     )
 
+//    input : Type -> Name -> Value -> Tag
 const input = (type) => (name) => (value) =>
   tag ('input')
-    ( addAttribute ('type') (type)
-    , addAttribute ('name') (name)
-    , addAttribute ('value') (value)
+    ( typed (type)
+    , named (name)
+    , valued (value)
     )
 
-const label = (value) =>
-  tag ('label') (innerText (value))
-
+//    labelFor : Name -> Value -> Tag
 const labelFor = (name) => (value) => 
-  compose(addAttribute ('for') (name), label(value))
-
-const checkBox = (name) => (isChecked) => 
-  compose
-    ( isChecked ? addAttribute ('checked') (true) : id
-    , input ('checkbox') (name) ("")
+  tag ('label')
+    ( valued (value)
+    , fored (name)
     )
+
+//    label : Value -> Tag
+const label = labelFor ('')
+
+//    checkBox : Name -> Bool -> Tag
+const checkBox = (name) => (isChecked) => 
+  applyTo 
+    ( (input ('checkbox') (name) (true)))
+    (isChecked ? checked : id) 
 
 const newItem = (text = "TODO", isDone = false) => ({ text, isDone })
 
