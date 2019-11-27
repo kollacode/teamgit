@@ -150,8 +150,8 @@ const renderTodoItemIsDone = checkBox ('itemIsDone')
 //    renderTodoItem : Item -> Tag
 const renderTodoItem = (item) =>
   appendChild 
-    (renderTodoItemText (item))
-    (renderTodoItemIsDone (item))
+    (renderTodoItemText (itemText (item)))
+    (renderTodoItemIsDone (itemIsDone (item)))
 
 //    mainElem : Tag
 const mainElem = findElemById ('main') 
@@ -162,10 +162,14 @@ const renderTodoItems = map (renderTodoItem)
 //    todoItems : [Item]
 const todoItems = 
   map 
-    ( compose_ 
-        (flip (newItem) (true))
-        (prependText ("Item - "))
+    (compose_ 
+      (flip (newItem) (true)) 
+      (prependText ("Item - 1")) 
     )
     (range (0) (4))
 
-addChildrenTo (mainElem) (renderTodoItems (todoItems))
+console.log(todoItems)
+ 
+runTag (
+  addChildrenTo (mainElem) (renderTodoItems (todoItems))
+)
