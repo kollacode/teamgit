@@ -91,6 +91,26 @@ const fored = addAttribute ('for')
 //    checked : Tag -> Tag
 const checked = addAttribute ('checked') (true)
 
+const getTarget = ({ target = null }) => target
+const getValue  = ({ value = null}) => value
+const getName   = ({ name = null }) => name
+
+//    preventingDefault : Event -> Event
+const preventingDefault = (e) => (e.preventDefault(), e)
+
+//    withEventValue : (Value -> ()) -> Event -> ()
+const withEventValue = (f) => compose (getTarget, getValue, f)
+
+//    onEvent : EventName -> (Event -> ()) -> Tag -> Tag
+const onEvent = (eventName) => (f) => mapTag (elem =>
+  ( elem.addEventListener(eventName, f)
+  , elem
+  )
+)
+
+//    onChange : (Event -> ()) -> Tag -> Tag
+const onChange = onEvent ('change')
+
 //    appendTag : Tag -> Tag -> Tag
 const appendElem = elem => mapTag (paren =>
   ( paren.appendChild (runTag (elem))
@@ -144,7 +164,7 @@ const itemIsDone = ({ isDone = true }) => isDone
 const renderTodoItemText = (text) =>
   addChildrenTo (newTag ('span'))
     ( labelFor ("itemText") ("Item: ")
-    , inputText ("itemText") (text)
+    , onChange (() => console.log("value changed")) (inputText ("itemText") (text))
     )
 
 //    renderTodoItemIsDone : Bool -> Tag
