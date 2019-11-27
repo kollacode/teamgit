@@ -102,7 +102,7 @@ const appendElem = elem => mapTag (paren =>
 const appendChild = flip (appendElem)
 
 //    addChildrenTo : Tag -> [Tag] -> Tag
-const addChildrenTo = fold (uncurry (appendChild))
+const addChildrenTo = (p) => compose_ (fold (uncurry (appendChild)) (p)) (argsAsList)
 
 //    input : Type -> Name -> Value -> Tag
 const input = (type) => (name) => (value) =>
@@ -159,6 +159,8 @@ const mainElem = findElemById ('main')
 //    renderTodoItems : [Item] -> [Tag]
 const renderTodoItems = map (renderTodoItem)
 
+const header = tag ('h1') (innerText ("TODO!"))
+
 //    todoItems : [Item]
 const todoItems = 
   map 
@@ -171,5 +173,8 @@ const todoItems =
 console.log(todoItems)
  
 runTag (
-  addChildrenTo (mainElem) (renderTodoItems (todoItems))
+  addChildrenTo (mainElem) 
+    ( header
+    , ...renderTodoItems (todoItems)
+    )
 )
