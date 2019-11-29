@@ -98,8 +98,8 @@ const getName   = ({ name = null }) => name
 //    preventingDefault : Event -> Event
 const preventingDefault = (e) => (e.preventDefault(), e)
 
-//    withEventValue : (Value -> ()) -> Event -> ()
-const withEventValue = (f) => compose (getTarget, getValue, f)
+//    withTargetValue : (Value -> ()) -> Event -> ()
+const withTargetValue = (f) => compose (getTarget, getValue, f)
 
 //    onEvent : EventName -> (Event -> ()) -> Tag -> Tag
 const onEvent = (eventName) => (f) => mapTag (elem =>
@@ -164,7 +164,7 @@ const itemIsDone = ({ isDone = true }) => isDone
 const renderTodoItemText = (text) =>
   addChildrenTo (newTag ('span'))
     ( labelFor ("itemText") ("Item: ")
-    , onChange (() => console.log("value changed")) (inputText ("itemText") (text))
+    , onChange (withTargetValue (trace)) (inputText ("itemText") (text))
     )
 
 //    renderTodoItemIsDone : Bool -> Tag
