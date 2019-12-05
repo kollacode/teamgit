@@ -34,20 +34,31 @@ __DO NOT WORK ON MASTER EVER!!!!!!!!!__
 
 We're the team "NAME-IT!" and our job as namers are to record names of people.
 
-NOTE: __ALL PATHS ARE RELATIVE TO THE `practice` DIRECTORY__
+1. Create a new branch and PR. Name the branch `create-<your-first-name` For example:
 
+  ```
+  git checkout -b create-noah
+  git push origin -u create-noah # I'll use the printed link to create a new PR
+  ```
+1. If you're in the terminal:
+
+  ```
+  cd practice
+  ```
 1. Create a new file with your first name in lowercase (and no file extension).
    For example: 
    
    ```
-   touch noah
+   touch noah # remember we're in the practice/ directory
    ```
 1. Print your favorite food and current city in the file in the format:
 
     ```
-    { "favoriteFood": "pizza"
-    , "city": "Atlanta"
+    { "favoriteFood": "pizza",
+      "city": "Atlanta"
+    }
     ```
+1. 
 
 ### Creating a new Branch
 
