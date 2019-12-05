@@ -30,6 +30,25 @@ __DO NOT WORK ON MASTER EVER!!!!!!!!!__
 1. When you're done request a reviewer in the PR.
 1. After the PR is approved merge using (squash and merge)
 
+### Practice
+
+We're the team "NAME-IT!" and our job as namers are to record names of people.
+
+NOTE: __ALL PATHS ARE RELATIVE TO THE `practice` DIRECTORY__
+
+1. Create a new file with your first name in lowercase (and no file extension).
+   For example: 
+   
+   ```
+   touch noah
+   ```
+1. Print your favorite food and current city in the file in the format:
+
+    ```
+    { "favoriteFood": "pizza"
+    , "city": "Atlanta"
+    ```
+
 ### Creating a new Branch
 
 #### New Branch On Github.com
