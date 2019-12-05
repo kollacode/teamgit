@@ -1,6 +1,12 @@
 Team Git
 ========
 
+Resources
+---------
+
+[Git SCM][git-scm]
+[Git Workflows][git-scm-workflows]
+
 Work Flow
 ---------
 
@@ -99,3 +105,5 @@ Resources
 ---------
 
 [cheatsheet]: N/A
+[git-scm]: https://git-scm.com/
+[git-scm-workflows]: https://git-scm.com/book/en/v2/Git-Branching-Branching-Workflows
