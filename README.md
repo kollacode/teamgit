@@ -7,8 +7,37 @@ Resources
 [Git SCM][git-scm]
 [Git Workflows][git-scm-workflows]
 
+Benefits of GIT
+---
+
+When used properly GIT allows us to modify our source code WITHOUT looking at
+it! 
+
+For example
+
 Work Flow
 ---------
+
+1. Branch from a source of truth (typically `master`, but sometimes `dev`)
+1. Do work...commit every ~10 min (preferablly more often)
+1. Push to a branch on another remote
+1. Open a PR after your first commit and push (mark as WIP)
+1. Keep working on a new branch
+
+### Branch
+
+1. Stop! Think! Branch!
+
+  * "I need to fix this bug"
+  * "I'm starting to contribute to a project"
+  * "I'm going to add a new feature"
+  * "I'm going to update"
+
+1. Some questions to ask:
+
+  * What "things" are these changes going to affect?
+  * Are other people going to need these changes while I'm still working on
+    this branch?
 
 1. Pull from origin/master
 1. Create a new branch
