@@ -8,21 +8,94 @@ Resources
 [Git Workflows][git-scm-workflows]
 
 Benefits of GIT
----
+---------------
 
-When used properly GIT allows us to modify our source code WITHOUT looking at
-it! 
-
-For example
+* When used properly GIT allows us to modify our source code WITHOUT looking at
+  it! 
+* Spend less time managing the code
 
 Work Flow
 ---------
 
-1. Branch from a source of truth (typically `master`, but sometimes `dev`)
-1. Do work...commit every ~10 min (preferablly more often)
-1. Push to a branch on another remote
-1. Open a PR after your first commit and push (mark as WIP)
-1. Keep working on a new branch
+1. Branch from a source of truth (typically `master`, but sometimes `dev` - in
+   the case of IBM)
+1. Create a new branch (either on your terminal and then push - see below - or
+   using the github interface - see below)
+1. Open a PR after your first commit and push (add relavent labels, and project
+   information)
+1. Do work...commit very often (preferablly more often) and push to the
+   corresponding branch
+1. When you're done request a reviewer in the PR.
+1. After the PR is approved merge using (squash and merge)
+
+#### Starting On Github.com
+
+1. Refer to here their [official docs][github-new-branch] (_make sure to select
+   the `dev` or `master branch!_)
+1. On your local machine: 
+
+    ```
+    git fetch origin
+    git checkout -t origin/<new-branch-name>
+    ```
+
+#### Starting On Your Local Machine
+
+Follow the steps below (assuming you're on a clean working directory)
+
+```
+git checkout master
+git pull origin master
+git checkout -b <new-branch-name>
+git push origin -u <new-branch-name>
+```
+
+Github sends a link in the push message to a new PR. Use that to open a new
+pull request.
+
+### When To Create a New Branch
+
+### Creating a new Branch
+
+### Keeping Up to Date With the single source of truth
+
+1. Use `git rebase` instead of `git merge` when pulling in changes from master.
+
+  ```
+  A <- B <- C <- D <- H (master)
+              \- E <- F <- G (new-feature)
+
+              ||
+              ||
+              ||
+              \/
+
+                (master)
+  A <- B <- C <- D <- H <- E' <- F' <- G' <- I (new-feature)
+
+              ||
+              ||
+              ||
+              \/
+
+                                               (master) 
+  A <- B <- C <- D <- H <- E' <- F' <- G' <- I (new-feature)
+  ```
+Is easier to manage than
+
+  ```
+  A <- B <- C <- D <- H (master)
+              \- E <- F <- G (new-feature)
+
+              ||
+              ||
+              ||
+              \/
+
+  A <- B <- C <- D <- H --------- J (master)
+            \            \       /
+              \- E <- F <- G <- I (new-feature)
+  ```
 
 ### Branch
 
@@ -125,14 +198,10 @@ Git logs
     git log --graph --oneline --all --decorate
     ```
 
-Rebasing
---------
-
-Simply re-apply the changes introduced in your branch to another commit.
-
 Resources
 ---------
 
 [cheatsheet]: N/A
 [git-scm]: https://git-scm.com/
 [git-scm-workflows]: https://git-scm.com/book/en/v2/Git-Branching-Branching-Workflows
+[github-new-branch]: https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-and-deleting-branches-within-your-repository
