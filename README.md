@@ -119,10 +119,29 @@ Git logs
 
 ### Remotes
 
-* Github != Git
-* Github doesn't know your machine exists and your machine doesn't know that
-  Github exists.
+A remote is simple: another repository ...ANYWHERE...
 
+From [Git SCM on remotes][git-scm-remotes] 
+
+  ```
+  It is entirely possible that you can be working with a “remote” repository
+  that is, in fact, on the same host you are. The word “remote” does not
+  necessarily imply that the repository is somewhere else on the network or
+  Internet, only that it is elsewhere. Working with such a remote repository
+  would still involve all the standard pushing, pulling and fetching operations
+  as with any other remote.
+  ```
+Remotes allow you copy a git tree from one repository to another.
+
+#### Remote branches
+
+A remote branch is completely independent of your local branches.
+Use `git branch -a` to list all available branches.
+
+#### What really happens when you pull (abridged)
+
+1. `git fetch`
+1. `git merge origin/<branch>`
 
 Resources
 ---------
@@ -131,3 +150,4 @@ Resources
 [git-scm]: https://git-scm.com/
 [git-scm-workflows]: https://git-scm.com/book/en/v2/Git-Branching-Branching-Workflows
 [github-new-branch]: https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-and-deleting-branches-within-your-repository
+[git-scm-remotes]: https://git-scm.com/book/en/v2/Git-Basics-Working-with-Remotes
