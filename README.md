@@ -32,7 +32,7 @@ __DO NOT WORK ON MASTER EVER!!!!!!!!!__
 
 ### Creating a new Branch
 
-#### Starting On Github.com
+#### New Branch On Github.com
 
 1. Refer to here their [official docs][github-new-branch] (_make sure to select
    the `dev` or `master branch!_)
@@ -43,7 +43,7 @@ __DO NOT WORK ON MASTER EVER!!!!!!!!!__
     git checkout -t origin/<new-branch-name>
     ```
 
-#### Starting On Your Local Machine
+#### New Branch On Your Local Machine
 
 Follow the steps below (assuming you're on a clean working directory)
 
