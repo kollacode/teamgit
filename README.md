@@ -53,9 +53,25 @@ git push origin -u <new-branch-name>
 Github sends a link in the push message to a new PR. Use that to open a new
 pull request.
 
-### When To Create a New Branch
+### When To Create a New Branch From Master
+
+These changes are...
+
+### ...independent of on going branches
+
+#### Examples
+
+### ...going related to ongoing branches and will affect more than one
+
+#### Examples
+
+### ...a new idea that may be easily thrown away
+
+#### Examples
 
 ### Creating a new Branch
+
+#### Examples
 
 ### Keeping Up to Date With the single source of truth
 
@@ -100,11 +116,6 @@ Is easier to manage than
 ### Branch
 
 1. Stop! Think! Branch!
-
-  * "I need to fix this bug"
-  * "I'm starting to contribute to a project"
-  * "I'm going to add a new feature"
-  * "I'm going to update"
 
 1. Some questions to ask:
 
