@@ -28,6 +28,8 @@ Work Flow
 1. When you're done request a reviewer in the PR.
 1. After the PR is approved merge using (squash and merge)
 
+### Creating a new Branch
+
 #### Starting On Github.com
 
 1. Refer to here their [official docs][github-new-branch] (_make sure to select
@@ -57,21 +59,10 @@ pull request.
 
 These changes are...
 
-### ...independent of on going branches
-
-#### Examples
-
-### ...going related to ongoing branches and will affect more than one
-
-#### Examples
-
-### ...a new idea that may be easily thrown away
-
-#### Examples
-
-### Creating a new Branch
-
-#### Examples
+* New feature
+* New bug fix
+* Testing / playing around
+* Changes that might be needed across multiple braches
 
 ### Keeping Up to Date With the single source of truth
 
