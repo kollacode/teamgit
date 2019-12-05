@@ -66,7 +66,7 @@ pull request.
               \- E <- F <- G (new-feature)
 
               ||
-              ||
+              ||  (git rebase master; ...)
               ||
               \/
 
@@ -74,7 +74,7 @@ pull request.
   A <- B <- C <- D <- H <- E' <- F' <- G' <- I (new-feature)
 
               ||
-              ||
+              ||  (git checkout master; git merge new-feature)
               ||
               \/
 
@@ -88,7 +88,7 @@ Is easier to manage than
               \- E <- F <- G (new-feature)
 
               ||
-              ||
+              || (git merge master; ... git checkout master; git merge new-feature)
               ||
               \/
 
